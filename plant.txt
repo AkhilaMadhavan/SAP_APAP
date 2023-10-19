@@ -1,0 +1,21 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_PLANT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_PLANT.
+TYPES : BEGIN OF ty_marc,
+  matnr TYPE marc-matnr,
+  werks TYPE marc-werks,
+  END OF ty_marc.
+
+  DATA : st_marc TYPE ty_marc.
+
+  PARAMETERS p_matnr TYPE marc-matnr.
+  select matnr werks from marc INTO st_marc where matnr eq p_matnr.
+*    select single matnr werks from marc INTO st_marc where matnr eq p_matnr.
+
+
+    write : st_marc-matnr,
+    st_marc-werks.
+    ENDSELECT.

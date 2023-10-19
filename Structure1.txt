@@ -1,0 +1,56 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_STR1
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_STR1.
+
+*TYPES :BEGIN OF ty_zakhila_demo,
+*    MANDT TYPE zakhila_demo-MANDT,
+*    ID TYPE zakhila_demo-ID,
+*    NAME TYPE zakhila_demo-NAME,
+*    SALARY TYPE zakhila_demo-SALARY,
+*  END OF ty_zakhila_demo.
+*
+*  DATA : st_table TYPE ty_zakhila_demo.
+*  PARAMETERS p_id TYPE zakhila_demo-id.
+*  select id name salary from zakhila_demo into st_table WHERE id EQ p_id.
+*    WRITE :/ st_table-id,
+*             st_table-name,
+*             st_table-salary.
+*    ENDSELECT.
+*
+
+*TYPES :BEGIN OF ty_zakhila_demo,
+*   NAME TYPE zakhila_demo-NAME,
+*  END OF ty_zakhila_demo.
+*
+*  DATA : st_table1 TYPE ty_zakhila_demo.
+*  PARAMETERS p_dept TYPE zakhila_demo-dept_id.
+*  select name from zakhila_demo into st_table1 WHERE dept_id EQ p_dept.
+*    WRITE :/ st_table1-name.
+*           ENDSELECT.
+
+* display all the details of employee along with dept description from dept table
+
+TYPES :BEGIN OF ty_zakhila_demo,
+    ID TYPE zakhila_demo-ID,
+    NAME TYPE zakhila_demo-NAME,
+    SALARY TYPE zakhila_demo-SALARY,
+    dept_id TYPE zakhila_demo-dept_id,
+  END OF ty_zakhila_demo.
+
+  DATA : st_table TYPE ty_zakhila_demo.
+
+  PARAMETERS p_id TYPE zakhila_demo-id.
+  select id name salary dept_id from zakhila_demo into st_table WHERE id EQ p_id.
+    DATA d_desc TYPE zakhila_dept-DEPT_DESC.
+    select single dept_desc from zakhila_dept into d_desc WHERE dept_id EQ st_table-dept_id.
+
+
+    WRITE :/ st_table-id,
+             st_table-name,
+             st_table-salary,
+             st_table-dept_id,
+             d_desc.
+    ENDSELECT.

@@ -1,0 +1,111 @@
+**&---------------------------------------------------------------------*
+**& Report ZAKHILA_INT_TABLES
+**&---------------------------------------------------------------------*
+**&
+**&---------------------------------------------------------------------*
+REPORT ZAKHILA_INT_TABLES.
+TYPES :BEGIN OF ty_makt,
+  matnr TYPE makt-matnr,
+  spras TYPE makt-spras,
+  maktx TYPE makt-maktx,
+*  maktg TYPE makt-maktg,
+  END OF TY_MAKT.
+*
+*  DATA  : it_makt TYPE table of ty_makt,
+*        wa_makt like line of it_makt.
+*
+*  wa_makt-matnr = '1001'.
+*  wa_makt-spras = 'E'.
+*  wa_makt-maktx = 'akhila'.
+*  append wa_makt to it_makt.
+*
+*  wa_makt-matnr = '1012'.
+*  wa_makt-spras = 'E'.
+*  wa_makt-maktx = 'uthara'.
+*  append wa_makt to it_makt.
+*
+*  wa_makt-matnr = '102'.
+*  wa_makt-spras = 'E'.
+*  wa_makt-maktx = 'anu'.
+*  append wa_makt to it_makt.
+*
+*  wa_makt-matnr = '103'.
+*  wa_makt-spras = 'E'.
+*  wa_makt-maktx = 'akshara'.
+*  append wa_makt to it_makt.
+*
+**READ TABLE it_makt INTO wa_makt INDEX 4.
+**READ TABLE it_makt INTO wa_makt WITH KEY matnr = '20' spras = 'D' .
+*
+**WRITE wa_makt.
+*
+*  READ TABLE it_makt INTO wa_makt with key matnr = '102' spras = 'E'.
+*  WRITE wa_makt.
+
+*Sorted Table
+
+*TYPES :BEGIN OF ty_makt,
+*  matnr TYPE makt-matnr,
+*  spras TYPE makt-spras,
+*  maktx TYPE makt-maktx,
+*  maktg TYPE makt-maktg,
+*  END OF TY_MAKT.
+*
+*DATA : it_makt TYPE SORTED TABLE OF ty_makt WITH UNIQUE KEY matnr,
+*      wa_makt LIKE LINE OF it_makt.
+*
+*  wa_makt-matnr = '105'.
+*  wa_makt-spras = 'E'.
+*  wa_makt-maktx = 'akhila'.
+*  insert wa_makt INTO TABLE it_makt.
+*
+*  wa_makt-matnr = '109'.
+*  wa_makt-spras = 'E'.
+*  wa_makt-maktx = 'uthara'.
+*  insert wa_makt INTO TABLE it_makt.
+*
+*  wa_makt-matnr = '102'.
+*  wa_makt-spras = 'E'.
+*  wa_makt-maktx = 'anu'.
+*  insert wa_makt INTO TABLE it_makt.
+*
+*  wa_makt-matnr = '103'.
+*  wa_makt-spras = 'E'.
+*  wa_makt-maktx = 'akshara'.
+*  insert wa_makt INTO TABLE it_makt.
+*
+*  wa_makt-matnr = '100'.
+*  wa_makt-spras = 'E'.
+*  wa_makt-maktx = 'appu'.
+*  insert wa_makt INTO TABLE it_makt.
+*
+**  READ TABLE it_makt INTO wa_makt with key matnr = '102' BINARY SEARCH.
+*  READ TABLE it_makt INTO wa_makt with key matnr = '103' spras ='E'.
+*  loop at it_makt INTO wa_makt.
+*  WRITE :wa_makt.
+*  ENDLOOP.
+
+*Hashed Table
+DATA : it_makt TYPE HASHED TABLE OF ty_makt WITH UNIQUE KEY matnr,
+      wa_makt LIKE LINE OF it_makt.
+
+  wa_makt-matnr = '105'.
+  wa_makt-spras = 'E'.
+  wa_makt-maktx = 'akhila'.
+  insert wa_makt INTO TABLE it_makt.
+
+  wa_makt-matnr = '109'.
+  wa_makt-spras = 'E'.
+  wa_makt-maktx = 'uthara'.
+  insert wa_makt INTO TABLE it_makt.
+
+  wa_makt-matnr = '102'.
+  wa_makt-spras = 'E'.
+  wa_makt-maktx = 'anu'.
+  insert wa_makt INTO TABLE it_makt.
+READ TABLE it_makt into wa_makt WITH TABLE KEY matnr = '102'.
+*sort it_makt by matnr.
+sort it_makt by maktx.
+loop at it_makt into wa_makt.
+  WRITE wa_makt.
+  ENDLOOP.
