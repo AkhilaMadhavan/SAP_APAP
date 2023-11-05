@@ -1,0 +1,21 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_EXAMPRGM
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_EXAMPRGM.
+DATA: it_kna1 type zakhila_exam_t_kna1,
+      wa_kna1 LIKE LINE OF it_kna1.
+select-OPTIONS s_num for wa_kna1-kunnr.
+CALL FUNCTION 'ZAKHILA_EXAM_FM'
+  EXPORTING
+    im_kunnr       = s_num[]
+ IMPORTING
+   EX_KNA1        = it_kna1
+          .
+
+LOOP at it_kna1 into wa_kna1.
+  write :/ wa_kna1-kunnr,
+           wa_kna1-name1,
+           wa_kna1-ort01.
+  ENDLOOP.

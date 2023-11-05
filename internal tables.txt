@@ -1,0 +1,40 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_INTERNAL_TABLES
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_INTERNAL_TABLES.
+
+TYPES : BEGIN OF ty_makt,
+  matnr TYPE makt-matnr,
+  spras TYPE makt-spras,
+  maktx TYPE makt-maktx,
+END OF ty_makt.
+
+DATA : it_makt TYPE TABLE OF ty_makt,
+      wa_makt LIKE LINE OF it_makt.
+
+wa_makt-matnr = '100'.
+wa_makt-spras = 'E'.
+wa_makt-maktx = 'Pen'.
+APPEND wa_makt TO it_makt.
+
+wa_makt-matnr = '200'.
+wa_makt-spras = 'E'.
+wa_makt-maktx = 'Pencil'.
+APPEND wa_makt to it_makt.
+
+wa_makt-matnr = '202'.
+wa_makt-spras = 'E'.
+wa_makt-maktx = 'Book'.
+APPEND wa_makt to it_makt.
+
+wa_makt-matnr = '220'.
+wa_makt-spras = 'E'.
+wa_makt-maktx = 'Bag'.
+APPEND wa_makt to it_makt.
+
+clear wa_makt.
+read table it_makt into wa_makt INDEX 3.
+read TABLE it_makt into wa_makt with key matnr = '202'.
+write wa_makt.

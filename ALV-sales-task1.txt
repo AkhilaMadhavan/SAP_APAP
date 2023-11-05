@@ -1,0 +1,243 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_ALV_SALES_TASK1
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_ALV_SALES_TASK1.
+DATA : IT_HEADER TYPE ZAKHILA_T_HEADER,
+       WA_HEADER LIKE LINE OF IT_HEADER,
+       IT_ITEM TYPE ZAKHILA_T_ITEM,
+       WA_ITEM LIKE LINE OF IT_ITEM,
+       IT_FCAT TYPE SLIS_T_FIELDCAT_ALV,
+       WA_FCAT LIKE LINE OF IT_FCAT.
+
+
+SELECT-OPTIONS S_NUM FOR WA_HEADER-VBELN.
+
+CALL FUNCTION 'ZAKHILA_HEADER_FM'
+  EXPORTING
+    im_vbeln        = S_NUM[]
+ IMPORTING
+   EX_HEADER       = IT_HEADER .
+
+PERFORM DISPLAY_HEADER.
+*&---------------------------------------------------------------------*
+*& Form DISPLAY_HEADER
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM display_header .
+  WA_FCAT-COL_POS = 1.
+  WA_FCAT-FIELDNAME = 'VBELN'.
+  WA_FCAT-TABNAME = 'IT_HEADER'.
+  WA_FCAT-SELTEXT_M = 'Document Number'.
+  WA_FCAT-OUTPUTLEN = 20.
+  APPEND WA_FCAT TO  IT_FCAT.
+
+  WA_FCAT-COL_POS = 2.
+  WA_FCAT-FIELDNAME = 'audat'.
+  WA_FCAT-TABNAME = 'IT_HEADER'.
+  WA_FCAT-SELTEXT_M = 'Document Date'.
+  WA_FCAT-OUTPUTLEN = 20.
+  APPEND WA_FCAT TO  IT_FCAT.
+
+  WA_FCAT-COL_POS = 3.
+  WA_FCAT-FIELDNAME ='netwr' .
+  WA_FCAT-TABNAME = 'IT_HEADER'.
+  WA_FCAT-SELTEXT_M = 'Net Value'.
+  WA_FCAT-OUTPUTLEN = 20.
+  APPEND WA_FCAT TO  IT_FCAT.
+
+  WA_FCAT-COL_POS = 4.
+  WA_FCAT-FIELDNAME ='name1' .
+  WA_FCAT-TABNAME = 'IT_HEADER'.
+  WA_FCAT-SELTEXT_M = 'Sold to party'.
+  WA_FCAT-OUTPUTLEN = 20.
+  APPEND WA_FCAT TO  IT_FCAT.
+
+  CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+ EXPORTING
+*   I_INTERFACE_CHECK                 = ' '
+*   I_BYPASSING_BUFFER                = ' '
+*   I_BUFFER_ACTIVE                   = ' '
+   I_CALLBACK_PROGRAM                = 'ZAKHILA_ALV_SALES_TASK1'
+   I_CALLBACK_PF_STATUS_SET          = 'PF_STATUS'
+   I_CALLBACK_USER_COMMAND           = 'USER_COMMAND'
+*   I_CALLBACK_TOP_OF_PAGE            = ' '
+*   I_CALLBACK_HTML_TOP_OF_PAGE       = ' '
+*   I_CALLBACK_HTML_END_OF_LIST       = ' '
+*   I_STRUCTURE_NAME                  =
+*   I_BACKGROUND_ID                   = ' '
+*   I_GRID_TITLE                      =
+*   I_GRID_SETTINGS                   =
+*   IS_LAYOUT                         =
+   IT_FIELDCAT                       = it_fcat
+*   IT_EXCLUDING                      =
+*   IT_SPECIAL_GROUPS                 =
+*   IT_SORT                           =
+*   IT_FILTER                         =
+*   IS_SEL_HIDE                       =
+*   I_DEFAULT                         = 'X'
+*   I_SAVE                            = ' '
+*   IS_VARIANT                        =
+*   IT_EVENTS                         =
+*   IT_EVENT_EXIT                     =
+*   IS_PRINT                          =
+*   IS_REPREP_ID                      =
+*   I_SCREEN_START_COLUMN             = 0
+*   I_SCREEN_START_LINE               = 0
+*   I_SCREEN_END_COLUMN               = 0
+*   I_SCREEN_END_LINE                 = 0
+*   I_HTML_HEIGHT_TOP                 = 0
+*   I_HTML_HEIGHT_END                 = 0
+*   IT_ALV_GRAPHICS                   =
+*   IT_HYPERLINK                      =
+*   IT_ADD_FIELDCAT                   =
+*   IT_EXCEPT_QINFO                   =
+*   IR_SALV_FULLSCREEN_ADAPTER        =
+*   O_PREVIOUS_SRAL_HANDLER           =
+* IMPORTING
+*   E_EXIT_CAUSED_BY_CALLER           =
+*   ES_EXIT_CAUSED_BY_USER            =
+  TABLES
+    t_outtab                          = it_header
+ EXCEPTIONS
+   PROGRAM_ERROR                     = 1
+   OTHERS                            = 2
+          .
+IF sy-subrc <> 0.
+* Implement suitable error handling here
+ENDIF.
+
+
+ENDFORM.
+
+FORM user_command  USING r_ucomm LIKE sy-ucomm
+                                   rs_selfield TYPE slis_selfield.
+    IF r_ucomm EQ '&IC1' AND rs_selfield-fieldname EQ 'VBELN'.
+      clear it_item.
+      DATA : v_vbeln TYPE vbap-vbeln.
+      v_vbeln = rs_selfield-value.
+
+      CALL FUNCTION 'ZAKHILA_ITEM_FM'
+        EXPORTING
+          im_v_vbeln       = v_vbeln
+       IMPORTING
+         EX_ITEM          = it_item.
+*         clear wa_fcat.
+          clear it_fcat.
+
+
+           WA_FCAT-COL_POS = 1.
+  WA_FCAT-FIELDNAME ='POSNR' .
+  WA_FCAT-TABNAME = 'IT_ITEM'.
+  WA_FCAT-SELTEXT_M = 'ITEM NAME'.
+  WA_FCAT-OUTPUTLEN = 20.
+  APPEND WA_FCAT TO  IT_FCAT.
+
+    WA_FCAT-COL_POS = 2.
+  WA_FCAT-FIELDNAME ='PSTYV' .
+  WA_FCAT-TABNAME = 'IT_ITEM'.
+  WA_FCAT-SELTEXT_M = 'MATERIAL'.
+  WA_FCAT-OUTPUTLEN = 20.
+  APPEND WA_FCAT TO  IT_FCAT.
+
+    WA_FCAT-COL_POS = 3.
+  WA_FCAT-FIELDNAME ='ARKTX' .
+  WA_FCAT-TABNAME = 'IT_ITEM'.
+  WA_FCAT-SELTEXT_M = 'item description'.
+  WA_FCAT-OUTPUTLEN = 20.
+  APPEND WA_FCAT TO  IT_FCAT.
+
+    WA_FCAT-COL_POS = 4.
+  WA_FCAT-FIELDNAME ='KWMENG' .
+  WA_FCAT-TABNAME = 'IT_ITEM'.
+  WA_FCAT-SELTEXT_M = 'order qty'.
+  WA_FCAT-OUTPUTLEN = 20.
+  APPEND WA_FCAT TO  IT_FCAT.
+
+    WA_FCAT-COL_POS = 5.
+  WA_FCAT-FIELDNAME ='MSEHI' .
+  WA_FCAT-TABNAME = 'IT_ITEM'.
+  WA_FCAT-SELTEXT_M = 'uom'.
+  WA_FCAT-OUTPUTLEN = 20.
+  APPEND WA_FCAT TO  IT_FCAT.
+
+    WA_FCAT-COL_POS = 6.
+  WA_FCAT-FIELDNAME ='NETWR' .
+  WA_FCAT-TABNAME = 'IT_ITEM'.
+  WA_FCAT-SELTEXT_M = 'Net Value'.
+  WA_FCAT-OUTPUTLEN = 20.
+  APPEND WA_FCAT TO  IT_FCAT.
+
+  CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+   EXPORTING
+*     I_INTERFACE_CHECK                 = ' '
+*     I_BYPASSING_BUFFER                = ' '
+*     I_BUFFER_ACTIVE                   = ' '
+     I_CALLBACK_PROGRAM                = 'ZAKHILA_ALV_SALES_TASK1'
+*     I_CALLBACK_PF_STATUS_SET          = ' '
+     I_CALLBACK_USER_COMMAND           = 'USER_COMMAND'
+*     I_CALLBACK_TOP_OF_PAGE            = ' '
+*     I_CALLBACK_HTML_TOP_OF_PAGE       = ' '
+*     I_CALLBACK_HTML_END_OF_LIST       = ' '
+*     I_STRUCTURE_NAME                  =
+*     I_BACKGROUND_ID                   = ' '
+*     I_GRID_TITLE                      =
+*     I_GRID_SETTINGS                   =
+*     IS_LAYOUT                         =
+     IT_FIELDCAT                       = it_fcat
+*     IT_EXCLUDING                      =
+*     IT_SPECIAL_GROUPS                 =
+*     IT_SORT                           =
+*     IT_FILTER                         =
+*     IS_SEL_HIDE                       =
+*     I_DEFAULT                         = 'X'
+*     I_SAVE                            = ' '
+*     IS_VARIANT                        =
+*     IT_EVENTS                         =
+*     IT_EVENT_EXIT                     =
+*     IS_PRINT                          =
+*     IS_REPREP_ID                      =
+*     I_SCREEN_START_COLUMN             = 0
+*     I_SCREEN_START_LINE               = 0
+*     I_SCREEN_END_COLUMN               = 0
+*     I_SCREEN_END_LINE                 = 0
+*     I_HTML_HEIGHT_TOP                 = 0
+*     I_HTML_HEIGHT_END                 = 0
+*     IT_ALV_GRAPHICS                   =
+*     IT_HYPERLINK                      =
+*     IT_ADD_FIELDCAT                   =
+*     IT_EXCEPT_QINFO                   =
+*     IR_SALV_FULLSCREEN_ADAPTER        =
+*     O_PREVIOUS_SRAL_HANDLER           =
+*   IMPORTING
+*     E_EXIT_CAUSED_BY_CALLER           =
+*     ES_EXIT_CAUSED_BY_USER            =
+    TABLES
+      t_outtab                          = it_item
+   EXCEPTIONS
+     PROGRAM_ERROR                     = 1
+     OTHERS                            = 2
+            .
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
+  ENDIF.
+   ENDIF.
+
+IF r_ucomm EQ '&IC1' AND rs_selfield-fieldname = 'name1'.
+READ TABLE it_header INTO wa_header WITH KEY name1 = rs_selfield-value.
+SET PARAMETER ID 'KUN' FIELD wa_header-kunnr.
+CALL TRANSACTION 'XD03' AND SKIP FIRST SCREEN.
+
+ENDIF.
+   ENDFORM.
+
+FORM PF_status USING rt_extab TYPE slis_t_extab.
+*  SET PF-STATUS 'ALV_STATUS'.
+  SET PF-STATUS 'ALV_FULL'.
+
+  ENDFORM.

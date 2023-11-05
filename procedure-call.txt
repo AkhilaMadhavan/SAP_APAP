@@ -1,0 +1,20 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_PROCEDURE_CALL
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_PROCEDURE_CALL.
+
+
+*PERFORM display in PROGRAM zakhila_procedure_1.
+
+*SUBMIT ZAKHILA_PROCEDURE_1.
+data d_date TYPE sy-datum.
+d_date = sy-datum.
+WRITE d_date.
+AT LINE-SELECTION.
+*  export d_date to MEMORY id 'AKHILA'.
+*  SET PARAMETER ID 'id1' FIELD D_DATE.
+
+  SUBMIT ZAKHILA_PROCEDURE_1 AND RETURN.
+  WRITE 'END'.

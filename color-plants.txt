@@ -1,0 +1,32 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_CLR_PLANT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_CLR_PLANT.
+TYPES :BEGIN OF ty_range,
+  sign TYPE c LENGTH 1,
+  opti TYPE c LENGTH 2,
+  low TYPE werks_d,
+  high TYPE werks_d,
+  END OF ty_range.
+
+DATA: it_view TYPE table of zakhila_view,
+      wa_view like LINE OF it_view,
+      it_plant TYPE TABLE OF zakhila_plant,
+      wa_plant LIKE LINE OF it_plant,
+      it_range TYPE TABLE OF ty_range.
+
+Select-OPTIONS s_matnr FOR wa_view-matnr.
+SELECT * FROM zakhila_view into table it_view WHERE matnr in s_matnr.
+  SELECT sign opti low high from zakhila_plant into TABLE it_range WHERE name eq 'CHECK_PLAN'.
+    loop at it_view into wa_view.
+      if wa_view-werks in it_range.
+        FORMAT COLOR COL_POSITIVE.
+        ENDIF.
+
+        WRITE :/ wa_view-matnr,
+               wa_view-werks,
+                wa_view-name1.
+        FORMAT COLOR OFF.
+        ENDLOOP.

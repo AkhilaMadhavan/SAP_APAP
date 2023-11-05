@@ -1,0 +1,35 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_PROCEDURE_1
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_PROCEDURE_1.
+*data d_date type sy-datum.
+*
+*INITIALIZATION.
+**load-OF-PROGRAM.
+*d_date = sy-datum.
+*
+*START-OF-SELECTION.
+*PERFORM display.
+**WRITE d_date.
+**&---------------------------------------------------------------------*
+**& Form display
+**&---------------------------------------------------------------------*
+**& text
+**&---------------------------------------------------------------------*
+**& -->  p1        text
+**& <--  p2        text
+**&---------------------------------------------------------------------*
+*FORM display .
+**  WRITE d_date.
+*
+*ENDFORM.
+*DATA D_DATE TYPE SY-DATUM.
+
+*data p_date TYPE sy-datum.
+**import p_date from MEMORY id 'AKHILA'.
+*GET PARAMETER ID 'id1' FIELD P_DATE.
+*WRITE p_date.
+
+WRITE 'HII'.
