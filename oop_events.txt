@@ -1,0 +1,33 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_OOP_EVENTS
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zakhila_oop_events.
+
+
+CLASS lcl_event_handler DEFINITION.
+
+  PUBLIC SECTION.
+    METHODS catch_double_click FOR EVENT raise_double_click OF ZCL_AKHILA_EVENTS.
+ENDCLASS.
+
+CLASS lcl_event_handler IMPLEMENTATION.
+
+  METHOD catch_double_click.
+    CALL TRANSACTION 'MM03'.
+  ENDMETHOD.
+
+ENDCLASS.
+
+DATA o_emp TYPE REF TO ZCL_AKHILA_EVENTS.
+DATA o_events TYPE REF TO lcl_event_handler.
+
+START-OF-SELECTION.
+
+  CREATE OBJECT o_emp.
+  CREATE OBJECT o_events.
+
+  SET HANDLER o_events->catch_double_click FOR o_emp.
+  o_emp->double_click( ).
+  WRITE 'end'.
