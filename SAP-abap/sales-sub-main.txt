@@ -1,0 +1,82 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_SALES_SUB_MAIN
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zakhila_sales_sub_main.
+DATA :it_vbap TYPE  zakhila_t_vbap,
+      wa_vbap like LINE OF it_vbap,
+      it_vbak TYPE  zakhila_t_vbak,
+      wa_vbak LIKE LINE OF it_vbak,
+      it_kna1 TYPE  zakhila_t_kna1,
+      wa_kna1 LIKE LINE OF it_kna1,
+      it_t006a TYPE  zakhila_t_t006a,
+      wa_t006a LIKE LINE OF it_t006a.
+
+
+
+
+*TYPES : ty_it_vbak TYPE STANDARD TABLE OF ty_vbak,
+*ty_it_kna1 TYPE STANDARD TABLE OF ty_kna1,
+*ty_it_vbap TYPE STANDARD TABLE OF ty_vbap,
+*ty_it_t006a TYPE STANDARD TABLE OF ty_t006a.
+
+SELECT-OPTIONS s_num FOR wa_vbak-vbeln.
+
+START-OF-SELECTION.
+
+
+PERFORM header IN PROGRAM ZAKHILA_SALES_SUB
+      USING s_num[]
+      CHANGING it_vbak it_kna1.
+
+END-OF-SELECTION.
+
+  LOOP AT it_vbak INTO wa_vbak.
+READ TABLE it_kna1 INTO wa_kna1 WITH KEY kunnr = wa_vbak-kunnr.
+AT FIRST.
+   WRITE :/20 'Document Number',
+    40 'Doc Date',
+    70 'Net Val',
+    90 'Sold To Party'.
+   ENDAT.
+
+    WRITE : /20 wa_vbak-vbeln,
+            40 wa_vbak-audat,
+            60 wa_vbak-netwr,
+           90  wa_kna1-name1.
+*    HIDE: wa_vbak-vbeln.
+  ENDLOOP.
+
+AT LINE-SELECTION.
+DATA : fnam(20),fval(50).
+DATA v_vbeln TYPE vbap-vbeln.
+GET CURSOR FIELD fnam VALUE fval.
+fnam = wa_vbak-vbeln.
+CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+  EXPORTING
+    input        = fval
+IMPORTING
+   OUTPUT        = v_vbeln
+          .
+*PERFORM items USING v_vbeln CHANGING it_vbap it_t006a.
+PERFORM items IN PROGRAM ZAKHILA_SALES_SUB USING v_vbeln CHANGING it_vbap it_t006a.
+
+LOOP AT it_vbap into wa_vbap.
+  READ TABLE it_t006a INTO wa_t006a WITH KEY msehi = wa_vbap-zieme.
+  AT FIRST.
+  WRITE :/ 'Item',
+       20 'Material',
+       35 'ItemDesc',
+60 'Order Qty' ,
+80 'UoM',
+100'NetVal'.
+  ENDAT.
+   WRITE : / wa_vbap-posnr,
+            20 wa_vbap-pstyv,
+            35  wa_vbap-arktx,
+            50 wa_vbap-kwmeng,
+            80 wa_t006a-msehl,
+            90 wa_vbap-netwr.
+
+   ENDLOOP.

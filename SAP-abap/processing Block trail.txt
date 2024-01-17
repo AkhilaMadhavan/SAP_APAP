@@ -1,0 +1,22 @@
+parameters p_matnr type matnr.
+
+load-of-program.
+write:/ 'load-of-program triggered'.
+
+INITIALIZATION.
+write:/ 'INITIALIZATION'
+
+end-of-selection.
+write:/ 'end-of-selection'.
+
+at selection-screen.
+write:/ 'at selection-screen started'.
+
+top-of-page.
+write:/ 'top-of-page'.
+
+end-of-page.
+write:/ 'End of page'.
+
+at line-selection.
+write:/ "At line selection'.

@@ -1,0 +1,140 @@
+*&---------------------------------------------------------------------*
+*& Report ZSUB_PROG
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZSUB_PROG.
+TYPES : BEGIN OF ty_range,
+       sign TYPE  c length 1,
+       opti type c length 2,
+  low type vbeln,
+  high type vbeln,
+  END OF ty_range.
+*TYPES: BEGIN  OF ty_vbap,
+*  vbeln type vbap-vbeln,
+*  posnr TYPE vbap-posnr,
+*  pstyv TYPE vbap-pstyv,
+*  arktx TYPE vbap-arktx,
+*  kwmeng TYPE vbap-kwmeng,
+*  zieme TYPE vbap-zieme,
+*  netwr TYPE vbap-netwr,
+*  END  OF ty_vbap.
+*  TYPES :BEGIN OF ty_vbak,
+*       vbeln TYPE vbak-vbeln,
+*       audat TYPE vbak-audat,
+*       netwr TYPE vbak-netwr,
+*       kunnr type vbak-kunnr,
+*END OF ty_vbak.
+*TYPES : BEGIN OF ty_t006a,
+*       msehi type t006a-msehi,
+*       msehl type t006a-msehl,
+*  END OF ty_t006a.
+*  TYPES : BEGIN OF ty_kna1 ,
+*    kunnr type kna1-kunnr,
+*    name1 type kna1-name1,
+*    END OF ty_kna1.
+*  DATA :
+*        it_vbak TYPE table of ty_vbak,
+*        wa_vbak LIKE LINE OF it_vbak.
+
+
+DATA :it_vbap type z1_vbap,
+      wa_vbap like line of it_vbap,
+      it_vbak type z1_vbak,
+      wa_vbak like line of it_vbak,
+      it_kna1 type z1_kna1,
+      wa_kna1 like line of it_kna1,
+      it_t006a type z1_t006a,
+      wa_t006a like line of it_t006a.
+DATA :it_header type z_header,
+      wa_header like line of it_header.
+*TYPES : ty_it_vbak TYPE STANDARD TABLE OF ty_vbak,
+*ty_it_kna1 TYPE STANDARD TABLE OF ty_kna1,
+*ty_it_vbap TYPE STANDARD TABLE OF ty_vbap,
+*ty_it_t006a TYPE STANDARD TABLE OF ty_t006a.
+*SELECT-OPTIONS s_num FOR wa_vbak-vbeln.
+TYPES: ty_it_range type STANDARD TABLE OF ty_range.
+*  DATA   p_s_num TYPE vbak-vbeln.
+ FORM display  USING p_s_num TYPE ty_it_range
+             CHANGING p_it_header TYPE z_header.
+
+
+
+
+*SELECT * FROM zs1_header INTO TABLE  it_header WHERE vbeln IN p_s_num.
+   SELECT  vbeln audat netwr kunnr FROM vbak INTO TABLE it_header WHERE vbeln IN p_s_num.
+SELECT kunnr name1 FROM kna1 INTO TABLE it_header FOR ALL ENTRIES IN p_it_header WHERE name1 EQ it_header-name1.
+
+ENDFORM.
+
+FORM itemdetails  USING    v_vbeln TYPE vbap-vbeln
+            CHANGING p_it_vbap TYPE z1_vbap
+                     p_it_t006a TYPE z1_t006a.
+  SELECT  vbeln posnr pstyv arktx kwmeng zieme netwr FROM vbap INTO TABLE p_it_vbap WHERE vbeln EQ v_vbeln.
+SELECT msehi msehl FROM t006a INTO TABLE p_it_t006a FOR ALL ENTRIES IN p_it_vbap where spras Eq sy-langu AND msehi EQ p_it_vbap-zieme.
+
+ENDFORM.
+________________________________________________________________________________
+
+
+*&---------------------------------------------------------------------*
+*& Report ZPROCEDURES_BLOCKS
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zprocedures_blocks.
+
+DATA :it_vbap type z1_vbap,
+      wa_vbap like line of it_vbap,
+*      it_vbak type z1_vbak,
+*      wa_vbak like line of it_vbak,
+*      it_kna1 type z1_kna1,
+*      wa_kna1 like line of it_kna1,
+      it_t006a type z1_t006a,
+      wa_t006a like line of it_t006a.
+      DATA :it_header type z_header,
+      wa_header like line of it_header.
+
+DATA : p_it_vbak type z_header,
+      wa_vbak LIKE LINE OF p_it_vbak,
+      p_it_kna1 type z_header,
+          wa_kna1 LIKE LINE OF p_it_kna1.
+SELECT-OPTIONS s_num FOR wa_vbak-vbeln.
+
+START-OF-SELECTION.
+
+  PERFORM display IN PROGRAM zsub_prog USING s_num[] CHANGING it_header.
+
+
+END-OF-SELECTION.
+
+AT LINE-SELECTION.  DATA : fnam(20),fval(50).
+  DATA v_vbeln TYPE vbap-vbeln.
+  GET CURSOR FIELD fnam VALUE fval.
+  fnam = wa_vbak-vbeln.
+  CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+    EXPORTING
+      input  = fval
+    IMPORTING
+      output = v_vbeln.
+
+  PERFORM itemdetails IN PROGRAM zsub_prog USING v_vbeln CHANGING it_vbap it_t006a.
+
+  LOOP AT it_vbap INTO wa_vbap.
+    READ TABLE it_t006a INTO wa_t006a WITH KEY msehi = wa_vbap-zieme.
+    AT FIRST.
+      WRITE :/ 'Item',
+           20 'Material',
+           35 'ItemDesc',
+    60 'Order Qty' ,
+     80 'UoM',
+     100'NetVal'.
+    ENDAT.
+    WRITE : / wa_vbap-posnr,
+             20 wa_vbap-pstyv,
+             35  wa_vbap-arktx,
+             50 wa_vbap-kwmeng,
+             80 wa_t006a-msehl,
+             90 wa_vbap-netwr.
+
+  ENDLOOP.

@@ -1,0 +1,28 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_OOP_INHERITANCE2
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_OOP_INHERITANCE2.
+
+DATA : O_BUS TYPE REF TO ZCL_AKHILA_BUS,
+       O_TRUCK TYPE REF TO ZCL_AKHILA_TRUCK,
+       O_ACC TYPE REF TO ZCL_AKHILA_ACCOUNT.
+
+CREATE OBJECT : O_BUS,O_TRUCK,O_ACC.
+O_ACC->calculate_fuel_cost( ovehicle = o_truck ).
+O_ACC->calculate_fuel_cost( ovehicle = o_bus ).
+
+WRITE 'end'.
+____________________________________________________________________________
+  method ZIF_AKHILA_VEHICLE~GET_MILAGE.
+    "Bus class
+  endmethod.
+____________________________________________________________________________
+  method ZIF_AKHILA_VEHICLE~GET_MILAGE.
+    "Truck class
+  endmethod.
+_____________________________________________________________________________
+  method CALCULATE_FUEL_COST.
+    ovehicle->get_milage( ).
+  endmethod.

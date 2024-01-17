@@ -1,0 +1,19 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_DATAOBJECTS_EXAMPLE
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_DATAOBJECTS_EXAMPLE.
+
+
+DATA lv_age TYPE I.                    " Variable declaration
+CONSTANTS c_legal_age TYPE I VALUE 18.   " Constant declaration
+
+lv_age = 25.
+*lv_age = 10.                            " Assigning a literal value to a variable
+
+IF lv_age >= c_legal_age.
+    WRITE 'You are of legal age.'.
+ELSE.
+        WRITE 'You are not of legal age.'.
+ENDIF.

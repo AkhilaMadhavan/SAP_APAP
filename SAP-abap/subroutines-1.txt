@@ -1,0 +1,104 @@
+**&---------------------------------------------------------------------*
+**& Report ZAKHILA_SUBROUTINES
+**&---------------------------------------------------------------------*
+**&
+**&---------------------------------------------------------------------*
+*REPORT ZAKHILA_SUBROUTINES.
+**PERFORM display.
+**form display.
+**  write 'subroutines called'.
+**  ENDFORM.
+*
+*
+*DATA: v_matnr type makt-matnr,
+*      v_spras TYPE makt-spras,
+*      v_maktx TYPE makt-maktx.
+*v_matnr = '000000000000000056'.
+*v_spras = 'E'.
+*PERFORM get_data USING v_matnr v_spras CHANGING v_maktx.
+*WRITE v_maktx.
+*
+**&---------------------------------------------------------------------*
+**& Form get_data
+**&---------------------------------------------------------------------*
+**& text
+**&---------------------------------------------------------------------*
+**& -->  p1        text
+**& <--  p2        text
+**&---------------------------------------------------------------------*
+*FORM get_data USING p_v_matnr type makt-matnr
+*                   p_v_spras TYPE makt-spras
+*              CHANGING p_v_maktx TYPE makt-maktx .
+*select SINGLE maktx FROM MAKT INTO p_v_maktx WHERE matnr EQ p_v_matnr AND spras EQ p_v_spras.
+*
+*ENDFORM.
+
+*****************************************************************
+*****************************************************************
+**&---------------------------------------------------------------------*
+**& Report ZAKHILA_SUBROUTINES
+**&---------------------------------------------------------------------*
+**&
+**&---------------------------------------------------------------------*
+*REPORT ZAKHILA_SUBROUTINES.
+**PERFORM display.
+**form display.
+**  write 'subroutines called'.
+**  ENDFORM.
+*
+*DATA: v_matnr type makt-matnr,
+*      v_spras TYPE makt-spras,
+*      v_maktx TYPE makt-maktx.
+*v_matnr = '000000000000000056'.
+*v_spras = 'E'.
+*PERFORM get_data USING v_matnr v_spras CHANGING v_maktx.
+*WRITE v_maktx.
+*
+**&---------------------------------------------------------------------*
+**& Form get_data
+**&---------------------------------------------------------------------*
+**& text
+**&---------------------------------------------------------------------*
+**& -->  p1        text
+**& <--  p2        text
+**&---------------------------------------------------------------------*
+*FORM get_data USING VALUE(p_v_matnr) type makt-matnr
+*                   VALUE(p_v_spras) TYPE makt-spras
+*              CHANGING p_v_maktx TYPE makt-maktx .
+*select SINGLE maktx FROM MAKT INTO p_v_maktx WHERE matnr EQ p_v_matnr AND spras EQ p_v_spras.
+*
+*ENDFORM.
+
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_SUBROUTINES
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_SUBROUTINES.
+*PERFORM display.
+*form display.
+*  write 'subroutines called'.
+*  ENDFORM.
+
+DATA: v_matnr type makt-matnr,
+      v_spras TYPE makt-spras,
+      v_maktx TYPE makt-maktx.
+v_matnr = '000000000000000056'.
+v_spras = 'E'.
+PERFORM get_data USING v_matnr v_spras CHANGING v_maktx.
+WRITE v_maktx.
+
+*&---------------------------------------------------------------------*
+*& Form get_data
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM get_data USING VALUE(p_v_matnr) type makt-matnr
+                   VALUE(p_v_spras) TYPE makt-spras
+              CHANGING VALUE(p_v_maktx) TYPE makt-maktx .
+select SINGLE maktx FROM MAKT INTO p_v_maktx WHERE matnr EQ p_v_matnr AND spras EQ p_v_spras.
+
+ENDFORM.

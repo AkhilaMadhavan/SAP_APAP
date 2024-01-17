@@ -1,0 +1,24 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_PROCEDURE_PROG1
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_PROCEDURE_PROG1.
+
+data v_doc type i.
+CALL FUNCTION 'ZAKHILA_PROCEDURE_ORIENTED_FM'
+ IMPORTING
+   NEXT_NUMBER       = v_doc
+          .
+
+CALL FUNCTION 'ZAKHILA_PROCEDURE_ORIENTED_FM'
+ IMPORTING
+   NEXT_NUMBER       = v_doc
+          .
+*
+*CALL FUNCTION 'ZAKHILA_PROCEDURE_ORIENTED_FM'
+* IMPORTING
+*   NEXT_NUMBER       = v_doc
+          .
+
+WRITE v_doc.

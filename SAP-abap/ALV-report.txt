@@ -1,0 +1,129 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_ALV_REPORT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_ALV_REPORT.
+DATA :it_makt type STANDARD TABLE OF makt.
+DATA :it_fcat TYPE SLIS_T_FIELDCAT_ALV ,
+      WA_FCAT LIKE LINE OF IT_FCAT,
+      ls_layout TYPE SLIS_LAYOUT_ALV.
+DATA : V_MATNR TYPE MAKT-MATNR.
+SELECT-OPTIONS s_matnr FOR v_matnr.
+
+START-OF-SELECTION.
+PERFORM get_data.
+end-of-SELECTION.
+
+PERFORM layout.
+PERFORM display_output.
+*&---------------------------------------------------------------------*
+*& Form display_output
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM display_output .
+  wa_fcat-col_pos = 1.
+  wa_fcat-fieldname = 'MATNR'.
+  wa_fcat-tabname = 'IT_MAKT'.
+  wa_fcat-seltext_m = 'Material Number'.
+  wa_fcat-outputlen = 20.
+  append wa_fcat to it_fcat.
+
+    wa_fcat-col_pos = 2.
+  wa_fcat-fieldname = 'SPRAS'.
+  wa_fcat-tabname = 'IT_MAKT'.
+  wa_fcat-seltext_m = 'Language'.
+  wa_fcat-outputlen = 10.
+  append wa_fcat to it_fcat.
+
+    wa_fcat-col_pos = 3.
+  wa_fcat-fieldname = 'MAKTX'.
+  wa_fcat-tabname = 'IT_MAKT'.
+  wa_fcat-seltext_m = 'Material Description'.
+  wa_fcat-outputlen = 20.
+  append wa_fcat to it_fcat.
+
+  CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+   EXPORTING
+*     I_INTERFACE_CHECK                 = ' '
+*     I_BYPASSING_BUFFER                = ' '
+*     I_BUFFER_ACTIVE                   = ' '
+     I_CALLBACK_PROGRAM                = 'ZAKHILA_ALV_REPORT'
+*     I_CALLBACK_PF_STATUS_SET          = ' '
+     I_CALLBACK_USER_COMMAND           = 'USER_COMMAND'
+*     I_CALLBACK_TOP_OF_PAGE            = ' '
+*     I_CALLBACK_HTML_TOP_OF_PAGE       = ' '
+*     I_CALLBACK_HTML_END_OF_LIST       = ' '
+*     I_STRUCTURE_NAME                  = 'MAKT'
+*     I_BACKGROUND_ID                   = ' '
+*     I_GRID_TITLE                      =
+*     I_GRID_SETTINGS                   =
+     IS_LAYOUT                         = ls_layout
+     IT_FIELDCAT                       = IT_FCAT
+*     IT_EXCLUDING                      =
+*     IT_SPECIAL_GROUPS                 =
+*     IT_SORT                           =
+*     IT_FILTER                         =
+*     IS_SEL_HIDE                       =
+*     I_DEFAULT                         = 'X'
+*     I_SAVE                            = ' '
+*     IS_VARIANT                        =
+*     IT_EVENTS                         =
+*     IT_EVENT_EXIT                     =
+*     IS_PRINT                          =
+*     IS_REPREP_ID                      =
+*     I_SCREEN_START_COLUMN             = 0
+*     I_SCREEN_START_LINE               = 0
+*     I_SCREEN_END_COLUMN               = 0
+*     I_SCREEN_END_LINE                 = 0
+*     I_HTML_HEIGHT_TOP                 = 0
+*     I_HTML_HEIGHT_END                 = 0
+*     IT_ALV_GRAPHICS                   =
+*     IT_HYPERLINK                      =
+*     IT_ADD_FIELDCAT                   =
+*     IT_EXCEPT_QINFO                   =
+*     IR_SALV_FULLSCREEN_ADAPTER        =
+*     O_PREVIOUS_SRAL_HANDLER           =
+*   IMPORTING
+*     E_EXIT_CAUSED_BY_CALLER           =
+*     ES_EXIT_CAUSED_BY_USER            =
+    TABLES
+      t_outtab                          = IT_MAKT
+   EXCEPTIONS
+     PROGRAM_ERROR                     = 1
+     OTHERS                            = 2
+            .
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form get_data
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM get_data .
+  SELECT * FROM makt INTO TABLE it_makt WHERE matnr in s_matnr.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form layout
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM layout .
+  ls_layout-zebra = 'X'.
+
+ENDFORM.

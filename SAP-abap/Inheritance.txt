@@ -1,0 +1,24 @@
+*&---------------------------------------------------------------------*
+*& Report ZAKHILA_OOP_INHERITANCE
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZAKHILA_OOP_INHERITANCE.
+DATA : o_super type REF TO zcl_akhila_super,
+       o_sub TYPE REF TO ZCL_AKHILA_SUBCLASS.
+
+create OBJECT : o_super, o_sub.
+
+o_super->get_milage( ).
+o_sub->get_milage( ).
+o_sub->get_seats( ).
+____________________________________________
+
+  method GET_MILAGE.
+*CALL METHOD SUPER->GET_MILAGE
+    "this is a sub class implementation"
+*    .
+  endmethod.
+____________________________________________
+  method GET_MILAGE.
+  endmethod.
